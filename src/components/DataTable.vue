@@ -1,106 +1,51 @@
 <template>
-
-  <v-data-table
-    :headers="headers"
-    :items="donor"
-    :items-per-page="5"
-    class="elevation-1"
-></v-data-table>
+    <v-data-table
+        :headers="headers"
+        :items="history"
+        :items-per-page="15"
+        class="elevation-1"
+    ></v-data-table>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  data() {
-    return{
-      headers: [
-        {
-          text: 'Donor ID',
-          align: 'start',
-          sortable: false,
-          value: 'donor',
-        },
-        { text: 'Recipient ID', value: 'recipient' },
-        { text: 'Category', value: 'type' },
-        { text: 'Amount (฿)', value: 'baht' },
-        { text: 'Tax Reduction', value: 'tax' },
-        { text: 'Date', value: 'date' },
-      ],
-      donor: [
-        {
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },
-        {
-          donor: '1102',
-          recipient: 1104,
-          type: "Construction",
-          baht: 2400,
-          tax: 168,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },{
-          donor: '1103',
-          recipient: 1104,
-          type: "Food",
-          baht: 240,
-          tax: 4.0,
-          date: '02/03/2021',
-        },
-      ],
+    data() {
+        return {
+            history: [],
+            headers: [
+                {text: 'Donor ID', align: 'start', value: 'from',},
+                {text: 'Recipient', value: 'to'},
+                {text: 'Cause', value: 'cause'},
+                {text: 'Amount (฿)', value: 'amount'},
+                // {text: 'Tax Reduction', value: 'tax_reduction'},
+                {text: 'Timestamp', value: 'timestamp'},
+            ],
+        }
+    },
+    methods: {
+        async fetchTransactions() {
+            try {
+                const res = await axios.get(`${process.env.VUE_APP_BACKEND_URL}/api/activity/all`)
+                const data = res.data.data
+                this.history = data.map((item) => {
+                    return {
+                        timestamp: item.timestamp,
+                        from: item.data.from,
+                        to: item.data.to,
+                        amount: Number(item.data.value),
+                        cause: item.data.cause
+                    }
+                })
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    },
+    created() {
+        this.fetchTransactions();
     }
-  },
 }
 </script>
 
