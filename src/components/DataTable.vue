@@ -16,25 +16,31 @@ export default {
             history: [],
             headers: [
                 {text: 'Donor ID', align: 'start', value: 'from',},
+                {text: 'Fullname', value: 'fullname'},
                 {text: 'Recipient', value: 'to'},
                 {text: 'Cause', value: 'cause'},
                 {text: 'Amount (฿)', value: 'amount'},
-                // {text: 'Tax Reduction', value: 'tax_reduction'},
-                {text: 'Timestamp', value: 'timestamp'},
+                {text: 'Tax Reduction', value: 'tax_reduction'},
+                {text: 'Timestamp', align:'end', value: 'timestamp'},
             ],
         }
     },
     methods: {
         async fetchTransactions() {
+            console.log("Function initialized")
             try {
                 const res = await axios.get(`${process.env.VUE_APP_BACKEND_URL}/api/activity/all`)
                 const data = res.data.data
+                console.log(data)
                 this.history = data.map((item) => {
+                    const parsedDate = new Date(item.timestamp);
                     return {
-                        timestamp: item.timestamp,
+                        timestamp: parsedDate.toLocaleString(),
                         from: item.data.from,
+                        fullname: item.data.fullname,
+                        tax_reduction: JSON.parse(item.data.tax_reduction) ? "YES" : "NO",
                         to: item.data.to,
-                        amount: Number(item.data.value),
+                        amount: item.data.value,
                         cause: item.data.cause
                     }
                 })
