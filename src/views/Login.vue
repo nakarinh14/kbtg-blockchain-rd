@@ -13,6 +13,7 @@
                                 name="login"
                                 label="Login"
                                 type="text"
+                                v-model="username"
                             ></v-text-field>
                             <v-text-field
                                 id="password"
@@ -20,12 +21,13 @@
                                 name="password"
                                 label="Password"
                                 type="password"
+                                v-model="password"
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" to="/">Login</v-btn>
+                        <v-btn color="primary" :to="`/${username}`">Login</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-flex>
@@ -35,7 +37,13 @@
 
 <script>
 export default {
-name: "Login"
+    name: "Login",
+    data() {
+        return {
+            username: "",
+            password: ""
+        }
+    }
 }
 </script>
 
